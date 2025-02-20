@@ -1,0 +1,14 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name = "org.example.LEGOSet" table = "LEGOSets">
+        <id name = "id" type = "int" column = "id">
+            <generator class="native"/>
+        </id>
+        <property name = "setName" column = "set_name" type = "string"/>
+        <property name = "piecesAmount" column="pieces_amount" type = "int"/>
+        <property name = "price" column = "price" type = "float"/>
+    </class>
+</hibernate-mapping>
