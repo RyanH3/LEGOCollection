@@ -1,38 +1,44 @@
 package org.example;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+
+import java.io.ByteArrayInputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
+public class AppTest
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
+    @Test
+    @DisplayName("Validate a floating point number")
+    void validateFloat() throws InterruptedException
     {
-        super( testName );
+        // simulate input
+        String simulatedInput = "12";
+        ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(testIn);
+
+        float result = App.validateFloat("Price of set: ");
+
+        // run test
+        assertEquals(12.0f, result);
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
+    @Test
+    @DisplayName("Validate an integer")
+    void validateInt() throws InterruptedException
     {
-        return new TestSuite( AppTest.class );
-    }
+        // simulate input
+        String simulatedInput = "12";
+        ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(testIn);
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+        float result = App.validateInt("Set ID: ");
+
+        // run test
+        assertEquals(12, result);
     }
 }
