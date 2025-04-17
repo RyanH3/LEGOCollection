@@ -1,11 +1,14 @@
 package org.example;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -13,8 +16,10 @@ import java.util.Scanner;
 public class App 
 {
     private static final SessionFactory factory = new Configuration().configure().buildSessionFactory();
+    public static final Logger logger = LogManager.getLogger();
 
     public static void main( String[] args ) throws InterruptedException {
+        /** commented out for use as a site
         int choice = showMenu();
         int setId;
         String setName;
@@ -78,7 +83,7 @@ public class App
                 default:
             }
         }
-    }
+    **/}
 
     /**
      * Adds a LEGO set to the collection.
@@ -95,9 +100,10 @@ public class App
             LEGOSet legoSet = new LEGOSet(setName, piecesAmount, price);
             session.persist(legoSet);
             transaction.commit();
+            logger.info("{} added", legoSet.getSetName());
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             session.close();
         }
@@ -120,20 +126,21 @@ public class App
                     try {
                         transaction = session.beginTransaction();
 
-                        LEGOSet item = (LEGOSet)session.get(LEGOSet.class, setID);
-                        session.delete(item);
+                        LEGOSet legoSet = (LEGOSet)session.get(LEGOSet.class, setID);
+                        session.delete(legoSet);
                         transaction.commit();
+                        logger.info("{} deleted", legoSet.getSetName());
 
                         isValid = true;
                     }
                     catch (Exception e) {
-                        System.out.println("Invalid input. Please type an ID in the list.\n");
+                        logger.warn("Invalid input. Please type an ID in the list.\n");
                     }
                 }
             }
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             session.close();
         }
@@ -204,9 +211,10 @@ public class App
      * Displays all the sets in the LEGO collection.
      * @return A list of LEGOSet Items.
      */
-    public static void viewItems() {
+    public static ArrayList<LEGOSet> viewItems() {
         Session session = factory.openSession();
         Transaction transaction = null;
+        ArrayList<LEGOSet> sets = new ArrayList<LEGOSet>();
 
         try {
             if (session.createQuery("FROM LEGOSet").list().isEmpty()) {
@@ -217,18 +225,22 @@ public class App
                 List rawItems = session.createQuery("FROM LEGOSet").list();
                 for (Iterator iterator = rawItems.iterator(); iterator.hasNext();){
                     LEGOSet legoSet = (LEGOSet) iterator.next();
-                    System.out.println("LEGO Set " + legoSet.getId() + ": " + legoSet.getSetName() + ". " +
-                            legoSet.getPiecesAmount() + " pieces, $" + legoSet.getPrice());
+                    sets.add(legoSet);
+                    //System.out.println("LEGO Set " + legoSet.getId() + ": " + legoSet.getSetName() + ". " +
+                    //        legoSet.getPiecesAmount() + " pieces, $" + legoSet.getPrice());
                 }
                 System.out.println();
+                logger.info("Sets printed");
                 transaction.commit();
             }
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             session.close();
         }
+
+        return sets;
     }
 
     /**

@@ -1,0 +1,23 @@
+<Configuration status="info">
+    <Properties>
+        <Property name="layout">%d %-5p [%t] %C{2} (%F:%L) - %m%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layout}" />
+        </Console>
+        <File name="FileAppender" fileName="legoLog.log">
+            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="updates" level="info">
+            <AppenderRef ref="FileAppender" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="FileAppender" />
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+</Configuration>
